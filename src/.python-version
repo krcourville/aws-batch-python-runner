@@ -1,5 +1,1 @@
-FROM python:3.8.12-alpine
-
-
-ADD requirements.txt
-ADD *.py
+3.8.10
