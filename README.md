@@ -65,7 +65,7 @@ docker run --rm gb-util:latest --help
     popd
     ```
 7. commit changes `git add... git commit...`
-8. tag the repo: `git tag
+8. tag the repo: `git tag $VERSION && git push --tags`
 
 
 ## References
