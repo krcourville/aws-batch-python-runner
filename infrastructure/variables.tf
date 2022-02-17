@@ -14,5 +14,5 @@ variable "app_env" {
 
 variable "app_image" {
   type    = string
-  default = "busybox"
+  default = "krcourville/gb-util:latest"
 }

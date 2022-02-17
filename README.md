@@ -2,15 +2,16 @@
 
 Utilities for working with data from [Project Gutenberg](https://www.gutenberg.org)
 
-## Prequisite Installations
+## Prerequisite Installations
 
 * Python: tested with 3.8
 * [pyenv](https://github.com/pyenv/pyenv): highly recommended for working with
 multiple versions of Python.
+* Terraform
 
 ## Getting started
 
-### Deploying Infrastructure
+### Deploying the Infrastructure
 
 ```sh
 pushd infrastructure
@@ -33,6 +34,23 @@ pip install -r requirements-dev.txt
 
 python gb-util.py --help
 ```
+
+### Docker
+
+```sh
+# build the image
+docker build ./src -f ./src/Dockerfile -t gb-util:latest
+
+# run it
+docker run --rm gb-util:latest --help
+
+# push to docker hub
+docker tag gb-util:latest krcourville/gb-util:latest
+docker push krcourville/gb-util:latest
+
+# Now, the image can be run AWS-deployed infrastructure
+```
+
 
 ## References
 
