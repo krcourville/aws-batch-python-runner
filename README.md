@@ -10,6 +10,15 @@ multiple versions of Python.
 
 ## Getting started
 
+### Deploying Infrastructure
+
+```sh
+pushd infrastructure
+terraform init
+terraform import aws_cloudwatch_log_group.aws_batch_job_log_group /aws/batch/job
+popd
+```
+
 ```sh
 python 3 -m venv .venv
 source .venv/bin/activate

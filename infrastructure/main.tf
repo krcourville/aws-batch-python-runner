@@ -10,9 +10,18 @@ terraform {
 
 provider "aws" {
   profile = "default"
-  region  = local.region
+  region  = var.region
+
+  default_tags {
+    tags = {
+    terraform = "true"
+    env       = var.app_env
+    app       = var.app_name
+    }
+  }
 }
 
 locals {
   region = "us-east-1"
+  prefix = "${var.app_name}-${var.app_env}"
 }

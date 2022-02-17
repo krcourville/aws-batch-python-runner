@@ -1,17 +1,18 @@
-# variable "vpc_id" {
-#   type = string
-# }
-
-# variable "subnet_id" {
-#   type = string
-# }
-
+variable "region" {
+  type    = string
+  default = "us-east-1"
+}
 variable "app_name" {
   type    = string
-  default = "gb-util"
+  default = "runner"
 }
 
-variable "app_environment" {
+variable "app_env" {
   type    = string
   default = "dev"
+}
+
+variable "app_image" {
+  type    = string
+  default = "busybox"
 }
