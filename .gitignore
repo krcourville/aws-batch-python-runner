@@ -259,4 +259,4 @@ terraform.rc
 .terraform.lock.hcl
 
 /infrastructure/builds
-/data
+data/

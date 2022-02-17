@@ -19,8 +19,11 @@ terraform import aws_cloudwatch_log_group.aws_batch_job_log_group /aws/batch/job
 popd
 ```
 
+### Running the cli
+
 ```sh
-python 3 -m venv .venv
+pushd src
+python3 -m venv .venv
 source .venv/bin/activate
 python -m pip install --upgrade pip
 pip install -r requirements.txt
@@ -28,7 +31,7 @@ pip install -r requirements.txt
 # for development
 pip install -r requirements-dev.txt
 
-python gb-util --help
+python gb-util.py --help
 ```
 
 ## References

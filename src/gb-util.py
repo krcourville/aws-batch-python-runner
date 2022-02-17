@@ -3,6 +3,7 @@ import asyncio
 from dataclasses import asdict
 import logging
 import json_log_formatter
+from os import environ
 
 from pathlib import Path
 from typing import Iterable
@@ -16,7 +17,8 @@ from lib.text_util import word_count
 
 json_formatter = json_log_formatter.JSONFormatter()
 root_logger = logging.getLogger()
-root_logger.setLevel(logging.INFO)
+log_level = environ.get("LOG_LEVEL", "INFO")
+root_logger.setLevel(log_level)
 
 console_handler = logging.StreamHandler()
 console_handler.setFormatter(json_formatter)
@@ -63,6 +65,11 @@ def analyze_books(indir: Path):
         logger.info("book-analysis", extra=result)
 
 
+async def ingest_books(indir: Path, outdir: Path):
+    await download_books(outdir)
+    analyze_books(indir)
+
+
 def main():
     parser = argparse.ArgumentParser(
         description="Utilities for working with data from [Project Gutenberg](https://www.gutenberg.org)"
@@ -92,6 +99,24 @@ def main():
         default=DEFAULT_DATA_PATH.joinpath("books"),
     )
     analyze_books_parser.set_defaults(func=analyze_books)
+
+    # ingest_books
+    ingest_books_parser = subparsers.add_parser(
+        "ingest-books", help="Run book ingestion process"
+    )
+    ingest_books_parser.add_argument(
+        "--indir",
+        type=Path,
+        help="directory containing books in plain text",
+        default=DEFAULT_DATA_PATH.joinpath("books"),
+    )
+    ingest_books_parser.add_argument(
+        "--outdir",
+        type=Path,
+        help="output directory to download books to",
+        default=DEFAULT_DATA_PATH,
+    )
+    ingest_books_parser.set_defaults(func=ingest_books, run_async=True)
 
     args = parser.parse_args()
     run_command(args)
