@@ -15,7 +15,7 @@ from lib.helpers import run_command
 from lib.io_util import download_file, format_filename
 from lib.text_util import word_count
 
-json_formatter = json_log_formatter.JSONFormatter()
+json_formatter = json_log_formatter.VerboseJSONFormatter()
 root_logger = logging.getLogger()
 log_level = environ.get("LOG_LEVEL", "INFO")
 root_logger.setLevel(log_level)

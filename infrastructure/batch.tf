@@ -88,7 +88,7 @@ resource "aws_batch_job_definition" "dev_bg_util_batch_job_def" {
   ]
   container_properties = jsonencode({
     "command" : ["echo", "test"],
-    "image" : var.app_image,
+    "image" : "${var.app_image}:${var.image_version}",
     "fargatePlatformConfiguration" : {
       "platformVersion" : "LATEST"
     },

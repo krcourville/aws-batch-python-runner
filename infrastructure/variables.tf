@@ -14,5 +14,9 @@ variable "app_env" {
 
 variable "app_image" {
   type    = string
-  default = "krcourville/gb-util:latest"
+  default = "krcourville/gb-util"
+}
+
+variable "image_version" {
+  type = string
 }
