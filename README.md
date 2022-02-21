@@ -53,7 +53,7 @@ docker run --rm gb-util:latest --help
 > TODO: make this less error-prone
 
 1. Review current version `app_image` var in `./infrastructure/variables.tf`
-2. Increment using semantic versioning: `export VERSION=x.x.x`  <-- Change `VERSION` to actual version!
+2. Increment using semantic versioning: `export VERSION=x.x.x
 3. build: `docker build ./src -f ./src/Dockerfile -t gb-util:latest`
 4. tag: `docker tag gb-util:latest krcourville/gb-util:${VERSION}`
 5. push: `docker push krcourville/gb-util:${VERSION}`
