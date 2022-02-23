@@ -54,7 +54,7 @@ docker run --rm gb-util:latest --help
 
 ```sh
 # 1. Review current version `app_image` var in `./infrastructure/variables.tf`
-# 2. ncrement using semantic versioning: `export VERSION=x.x.x
+# 2. increment using semantic versioning: `export VERSION=x.x.x
 # 3. build
 docker build ./src -f ./src/Dockerfile -t gb-util:latest
 # 4. tag
@@ -68,7 +68,7 @@ terraform apply
 popd
 # 7.commit changes
 git add... git commit...etc..
-# 8. tag the repo: 
+# 8. tag the repo:
 git tag $VERSION && git push --tags
 ```
 
