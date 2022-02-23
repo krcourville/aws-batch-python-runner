@@ -5,27 +5,6 @@ resource "aws_cloudwatch_log_group" "aws_batch_job_log_group" {
   retention_in_days = 5
 }
 
-resource "aws_iam_role" "runner_batch_svc_role" {
-  name = "${local.prefix}-batch-svc-role"
-
-  assume_role_policy = jsonencode({
-    "Version" : "2012-10-17",
-    "Statement" : [
-      {
-        "Action" : "sts:AssumeRole",
-        "Effect" : "Allow",
-        "Principal" : {
-          "Service" : "batch.amazonaws.com"
-        }
-      }
-    ]
-  })
-}
-
-resource "aws_iam_role_policy_attachment" "runner_batch_svc_role_attach_batch_service_role" {
-  role       = aws_iam_role.runner_batch_svc_role.name
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSBatchServiceRole"
-}
 
 resource "aws_security_group" "runner_batch_compute_sg" {
   name   = "${local.prefix}-runner-batch-compute-sg"
@@ -39,7 +18,6 @@ resource "aws_security_group" "runner_batch_compute_sg" {
     ipv6_cidr_blocks = ["::/0"]
   }
 }
-
 resource "aws_batch_compute_environment" "runner_batch_compute_env" {
   compute_environment_name = local.prefix
 
@@ -59,27 +37,6 @@ resource "aws_batch_compute_environment" "runner_batch_compute_env" {
   depends_on   = [aws_iam_role_policy_attachment.runner_batch_svc_role_attach_batch_service_role]
 }
 
-resource "aws_iam_role" "runner_task_exec_role" {
-  name = "${local.prefix}-runner-task-exec-role"
-  assume_role_policy = jsonencode({
-    "Version" : "2012-10-17",
-    "Statement" : [
-      {
-        "Action" : "sts:AssumeRole",
-        "Effect" : "Allow",
-        "Principal" : {
-          "Service" : "ecs-tasks.amazonaws.com"
-        }
-      }
-    ]
-  })
-}
-
-resource "aws_iam_role_policy_attachment" "runner_task_exec_role_attach_cw_policy" {
-  role       = aws_iam_role.runner_task_exec_role.name
-  policy_arn = "arn:aws:iam::aws:policy/CloudWatchFullAccess"
-}
-
 resource "aws_batch_job_definition" "dev_bg_util_batch_job_def" {
   name = local.prefix
   type = "container"
@@ -87,7 +44,6 @@ resource "aws_batch_job_definition" "dev_bg_util_batch_job_def" {
     "FARGATE"
   ]
   container_properties = jsonencode({
-    "command" : ["echo", "test"],
     "image" : "${var.app_image}:${var.image_version}",
     "fargatePlatformConfiguration" : {
       "platformVersion" : "LATEST"
@@ -96,7 +52,11 @@ resource "aws_batch_job_definition" "dev_bg_util_batch_job_def" {
       { "type" : "VCPU", "value" : "0.25" },
       { "type" : "MEMORY", "value" : "512" }
     ],
-    "executionRoleArn" : aws_iam_role.runner_task_exec_role.arn
+    "environment" : [
+      { "name" : "UPLOAD_BUCKET", "value" : "${aws_s3_bucket.batch_bucket.id}" }
+    ],
+    "executionRoleArn" : aws_iam_role.runner_task_exec_role.arn,
+    "jobRoleArn" : aws_iam_role.runner_job_role.arn
   })
 }
 
