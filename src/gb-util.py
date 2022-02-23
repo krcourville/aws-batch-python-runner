@@ -2,13 +2,14 @@ import argparse
 import asyncio
 from dataclasses import asdict
 import logging
-import json_log_formatter
+import boto3
 from os import environ
-
 from pathlib import Path
 from typing import Iterable
 
+import json_log_formatter
 import aiohttp
+
 from lib.gutenberg import FeedItem, GutenbergClient
 
 from lib.helpers import run_command
@@ -69,6 +70,15 @@ async def ingest_books(indir: Path, outdir: Path):
     await download_books(outdir)
     analyze_books(indir)
 
+def s3_upload_test():
+    bucket = environ.get("UPLOAD_BUCKET")
+    if not bucket:
+        raise Exception("Env var is not set: UPLOAD_BUCKET")
+
+    s3 = boto3.resource('s3')
+    content = "Hello s3!"
+    res = s3.Object(bucket, "test_file.txt").put(Body=content)
+    logger.info('s3-upload-response', extra=dict(s3_res=res))
 
 def main():
     parser = argparse.ArgumentParser(
@@ -100,7 +110,7 @@ def main():
     )
     analyze_books_parser.set_defaults(func=analyze_books)
 
-    # ingest_books
+    # ingest-books
     ingest_books_parser = subparsers.add_parser(
         "ingest-books", help="Run book ingestion process"
     )
@@ -117,6 +127,13 @@ def main():
         default=DEFAULT_DATA_PATH,
     )
     ingest_books_parser.set_defaults(func=ingest_books, run_async=True)
+
+    # s3-upload-test
+    s3_upload_test_parser = subparsers.add_parser(
+        "s3-upload-test", help="Upload a file to the bucket specified via $UPLOAD_BUCKET"
+    )
+    s3_upload_test_parser.set_defaults(func=s3_upload_test)
+
 
     args = parser.parse_args()
     run_command(args)
