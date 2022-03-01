@@ -8,10 +8,10 @@ Includes `gb-util` which simulates "ingestion" of books from the
 
 ## Prerequisite Installations
 
-* Terraform
-* Python: tested with 3.8
-* [pyenv](https://github.com/pyenv/pyenv): highly recommended for working with
-multiple versions of Python.
+-   Terraform
+-   Python: tested with 3.8
+-   [pyenv](https://github.com/pyenv/pyenv): highly recommended for working with
+    multiple versions of Python.
 
 ## Deploying the Infrastructure
 
@@ -72,14 +72,12 @@ git add... git commit...etc..
 git tag $VERSION && git push --tags
 ```
 
-
-
-
 ## References
 
-* <https://www.gutenberg.org/ebooks/offline_catalogs.html#the-project-gutenberg-catalog-metadata-in-machine-readable-format>
-* [aiohttp Client](https://us-pycon-2019-tutorial.readthedocs.io/aiohttp_client.html)
-* [Python Application Layouts: A Reference](https://realpython.com/python-application-layouts)
-* [Hands-on Intro to aiohttp](https://us-pycon-2019-tutorial.readthedocs.io/aiohttp_client.html)
-* <https://investigate.ai/>
-* <https://gmusumeci.medium.com/how-to-deploy-aws-ecs-fargate-containers-step-by-step-using-terraform-545eeac743be>
+-   <https://www.gutenberg.org/ebooks/offline_catalogs.html#the-project-gutenberg-catalog-metadata-in-machine-readable-format>
+-   [aiohttp Client](https://us-pycon-2019-tutorial.readthedocs.io/aiohttp_client.html)
+-   [Python Application Layouts: A Reference](https://realpython.com/python-application-layouts)
+-   [Hands-on Intro to aiohttp](https://us-pycon-2019-tutorial.readthedocs.io/aiohttp_client.html)
+-   <https://investigate.ai/>
+-   <https://gmusumeci.medium.com/how-to-deploy-aws-ecs-fargate-containers-step-by-step-using-terraform-545eeac743be>
+-   <https://advancedweb.hu/differences-between-put-and-post-s3-signed-urls/#content-type>

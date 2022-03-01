@@ -25,6 +25,7 @@ console_handler = logging.StreamHandler()
 console_handler.setFormatter(json_formatter)
 root_logger.addHandler(console_handler)
 
+logging.getLogger("botocore").setLevel(logging.WARNING)
 
 logger = logging.getLogger(__file__)
 
@@ -70,15 +71,32 @@ async def ingest_books(indir: Path, outdir: Path):
     await download_books(outdir)
     analyze_books(indir)
 
+
 def s3_upload_test():
+    bucket = get_bucket()
+    s3 = boto3.resource("s3")
+    content = "Hello s3!"
+    res = s3.Object(bucket, "test_file.txt").put(Body=content)
+    logger.info("s3-upload-response", extra=dict(s3_res=res))
+
+
+def get_upload_url(path: str):
+    bucket = get_bucket()
+    s3 = boto3.client("s3")
+
+    url = s3.generate_presigned_url(
+        ClientMethod="put_object",
+        Params=dict(Bucket=bucket, Key=path, ContentType="text/plain"),
+    )
+    print(url)
+
+
+def get_bucket():
     bucket = environ.get("UPLOAD_BUCKET")
     if not bucket:
         raise Exception("Env var is not set: UPLOAD_BUCKET")
+    return bucket
 
-    s3 = boto3.resource('s3')
-    content = "Hello s3!"
-    res = s3.Object(bucket, "test_file.txt").put(Body=content)
-    logger.info('s3-upload-response', extra=dict(s3_res=res))
 
 def main():
     parser = argparse.ArgumentParser(
@@ -130,10 +148,21 @@ def main():
 
     # s3-upload-test
     s3_upload_test_parser = subparsers.add_parser(
-        "s3-upload-test", help="Upload a file to the bucket specified via $UPLOAD_BUCKET"
+        "s3-upload-test",
+        help="Upload a file to the bucket specified via $UPLOAD_BUCKET",
     )
     s3_upload_test_parser.set_defaults(func=s3_upload_test)
 
+    # get-upload-url
+    get_upload_url_parser = subparsers.add_parser(
+        "get-upload-url",
+        help=(
+            "Render to stdout a url for upload to $UPLOAD_BUCKET. "
+            "Currently, only text/plain content type is supported"
+        ),
+    )
+    get_upload_url_parser.add_argument("path", help="Target s3 bucket key")
+    get_upload_url_parser.set_defaults(func=get_upload_url)
 
     args = parser.parse_args()
     run_command(args)
