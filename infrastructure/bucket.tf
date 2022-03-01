@@ -5,5 +5,6 @@ resource "random_pet" "batch_bucket_suffix" {
 }
 
 resource "aws_s3_bucket" "batch_bucket" {
-  bucket = "${local.prefix}-${random_pet.batch_bucket_suffix.id}"
+  bucket        = "${local.prefix}-${random_pet.batch_bucket_suffix.id}"
+  force_destroy = true
 }
