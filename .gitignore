@@ -260,3 +260,4 @@ terraform.rc
 
 /infrastructure/builds
 data/
+!/src/lib
