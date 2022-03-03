@@ -6,6 +6,7 @@ import boto3
 from os import environ
 from pathlib import Path
 from typing import Iterable
+import json
 
 import json_log_formatter
 import aiohttp
@@ -60,11 +61,12 @@ async def download_books(outdir: Path):
 
 
 def analyze_books(indir: Path):
-    for file in indir.iterdir():
-        text = file.read_text("UTF-8")
-        stats = word_count(text)
-        result = {"title": file.name, **asdict(stats)}
-        logger.info("book-analysis", extra=result)
+    with open(DEFAULT_DATA_PATH.joinpath("analysis.ndjson"), "w") as outfile:
+        for file in indir.iterdir():
+            stats = word_count(file)
+            result = {"title": file.name, **asdict(stats)}
+            result_json = json.dumps(result)
+            outfile.write(f"{result_json}\n")
 
 
 async def ingest_books(indir: Path, outdir: Path):
